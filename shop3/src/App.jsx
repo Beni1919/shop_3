@@ -5,6 +5,10 @@ import Header from './components/header/header'
 import Sidebar from './components/sidebar/sidebar'
 import ProductsContainer from './components/product_area/product_container'
 import CartContainer from './components/cart_page/cart_page'
+import Admin from './components/admin_components/admin'
+import AdminSidebar from './components/admin_components/admin_sidebar'
+import AddProductForm from './components/admin_components/add_product'
+
 
 export const CategorContext = createContext()
 
@@ -21,6 +25,8 @@ function App() {
             <Route path='/:category' element={[<Header/>,<Sidebar/>,<ProductsContainer/>]}></Route>
           </Route>
           <Route path='/cart' element={[<Header/>,<Sidebar/>,<CartContainer/>]}></Route>
+          <Route path='/admin'element={[<Admin/>]}></Route>
+          <Route path='/admin/addproduct' element={[<AdminSidebar/>,<AddProductForm/>]}></Route>
         </Routes>
       </BrowserRouter>
       </CategorContext.Provider>
