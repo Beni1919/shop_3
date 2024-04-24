@@ -11,6 +11,10 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
+
+
   
 
 
@@ -117,7 +121,8 @@ export default function AddProductForm(){
 
 
     return(
-        <div className="admin-form-container">
+        <div className="admin-form-container justify-self-center w-96">
+            <div>Új termék adatai:</div>
 
             <label className='admin-label' for="active">Termék neve:</label>
             <Input type="text" id="product-name" className="admin-text-input border-accent" value={product_name} name='product_name' onChange={(event) => setProduct_name(event.target.value)}></Input>
@@ -153,13 +158,13 @@ export default function AddProductForm(){
 
             <div className='admin-checkbox-container'>
                 <label for="active">Aktív</label>
-                <input type="checkbox" id="active" className="admin-checkbox-input"  name='active' onChange={handleCheckbox}></input>
+                <Checkbox type="checkbox" id="active" className="admin-checkbox-input"  name='active' onChange={handleCheckbox}></Checkbox>
                 <label for="focus">Kiemelt</label>
-                <input type="checkbox" id="focus" className="admin-checkbox-input" name='focus' onChange={handleCheckbox}></input>
+                <Checkbox type="checkbox" id="focus" className="admin-checkbox-input" name='focus' onChange={handleCheckbox}></Checkbox>
             </div>
             
             <label className='admin-label' for="description">Termék leírása:</label>
-            <textarea id="description" className="admin-textarea-input" value={description} name='description' onChange={(event) => setDescription(event.target.value)}></textarea>
+            <Textarea id="description" className="admin-textarea-input" value={description} name='description' onChange={(event) => setDescription(event.target.value)}></Textarea>
             
             <label className='admin-label' for="stock">Termék készlet:</label>
             <Input type="number" id="stock" className="admin-num-input" name='stock' disabled onChange={(event) => setStock(event.target.value)}></Input>
