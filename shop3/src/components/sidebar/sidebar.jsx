@@ -36,7 +36,7 @@ import { Button } from "@/components/ui/button"
     }
 
     return (
-        <div className="sidebar-container w-40 h-full mr-5">
+        <div className="sidebar-container w-40 h-full mr-5 col-span-1 border-2">
             {categoryList.map((item)=>
             <Collapsible key={item.category_id} className="flex flex-col">
                 <Link to={'/'+item.category_name}>

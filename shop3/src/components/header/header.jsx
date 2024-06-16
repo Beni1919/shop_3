@@ -9,7 +9,7 @@ import logo from './example_logo.png'
 
 export default function Header() {
     return(
-        <div className="header-container flex flex-row max-h-fit col-span-12">
+        <div className="header-container flex flex-row max-h-fit col-span-12 border-2">
             <img className="h-40" src={logo} alt="logo"/>
             <Nav/>
             <NavLink to={'/cart'}>

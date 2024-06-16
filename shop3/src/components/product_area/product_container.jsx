@@ -1,13 +1,11 @@
 import axios from "axios"
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom";
-import { CategorContext } from "@/App"
 import ProductCard from "./sub_components/product_card/product_card"
 
 export default function ProductsContainer() {
     const {category} = useParams()
     const [products, setProducts] = useState([])
-    //const [category, setCategory] = useContext(CategorContext)
 
     useEffect(()=>{
         const fetchProducts = async () => {
@@ -26,7 +24,7 @@ export default function ProductsContainer() {
     },[category])
 
     return(
-        <div className="products-container w-full flex flex-wrap gap-3 col-span-11">
+        <div className="products-container flex flex-wrap gap-3 col-span-11 ml-5">
             {products.map((item)=>
                 <ProductCard key={item.product_id}
                              id={item.product_id}

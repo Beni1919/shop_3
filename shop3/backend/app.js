@@ -37,7 +37,7 @@ app.use(session({
 
 // Kosár műveltek + session
 
-//Termák hozzáadása kosárhoz:
+//Termék hozzáadása kosárhoz:
 app.post('/addtocart', (req, res) => {
     if(req.session.cart !== 'undefined') {
 
@@ -99,7 +99,7 @@ const FileStrorageEngine = multer.diskStorage({
 })
 const upload = multer({storage: FileStrorageEngine})
 
-app.post('/upload', upload.single('image'), (req,res) => {
+app.post('/upload', upload.single('image'), (req,res,next) => {
     res.send('a kép feltöltésre került')
 })
 
@@ -139,7 +139,7 @@ app.post("/",(req,res)=>{
 // Adatbázis query új termék feltöltésére:
 
 app.post("/newproduct", (req,res)=>{
-    var sql = "INSERT INTO products (product_name,product_type,product_category,product_price,active,focus,picture,description,stock) VALUES (?)"
+    var sql = "INSERT INTO products (product_name,product_type,product_category,product_price,active,focus,picture,description) VALUES (?)"
     var values = [
         req.body.product_name,
         req.body.product_type,
@@ -149,15 +149,15 @@ app.post("/newproduct", (req,res)=>{
         req.body.focus,
         req.body.picture,
         req.body.description,
-        req.body.stock,
-    ]
+    ] 
 
-    db_connection.query(sql, [values],(err,data)=>{
+    let addProductQuery = db_connection.query(sql, [values],(err,data)=>{
+        console.log(addProductQuery)
         if (err) throw err
         if(err) return res.json(err)
-        return res.json("The book has been added to the databasee succesfully")
+        return res.json("The book has been added to the database succesfully")
     })
-})
+}) 
 
 // Kategóriák lekérése categories táblából:
 
@@ -167,5 +167,75 @@ app.get("/categories",(req,res)=>{
        if(err) return res.json(err)
        return res.json(data)
     })
+})
+
+// Alkategóriák lekérése subcategories táblából:
+
+app.get("/subcategories",(req,res)=>{
+    const productsQuery = "SELECT * FROM subcategories"
+    db_connection.query(productsQuery,(err,data)=>{
+       if(err) return res.json(err)
+       return res.json(data)
+    })
+})
+
+// Termékek lekrése szerkesztéshez rendezéssel
+
+app.post("/adminproducts",(req,res)=>{
+
+
+    if(req.body.sorting === '' && req.body.searchWord === ''){
+        const productsQuery = "SELECT * FROM products "
+        db_connection.query(productsQuery,(err,data)=>{
+       if(err) return res.json(err)
+       return res.json(data)
+    })
+    }else if (req.body.sorting === '' && req.body.searchWord != ''){
+        const productsQuery = "SELECT * FROM products WHERE product_name OR product_category OR product_type OR description LIKE '%" + req.body.searchWord + "%'"
+        //console.log(productsQuery)
+        db_connection.query(productsQuery,(err,data)=>{
+       if(err) return res.json(err)
+       return res.json(data)
+    })
+    }else if (req.body.sorting != '' && req.body.searchWord != ''){
+        const productsQuery = "SELECT * FROM products WHERE product_name OR product_category OR product_type OR description LIKE '%" + req.body.searchWord + "%'ORDER BY " + req.body.sorting + ""
+        console.log(productsQuery)
+        db_connection.query(productsQuery,(err,data)=>{
+       if(err) return res.json(err)
+       return res.json(data)
+    })
+    }
+})
+
+// Meglévő termék módosítása, szerkesztése:
+app.post("/updateproduct",(req,res)=>{
+    if(req.body.picture!=''){
+        const productsQuery = "UPDATE products SET product_name = '"+req.body.product_name+"',product_type = '"+req.body.product_type+"',product_category = '"+req.body.product_category+"', product_price = "+req.body.product_price+", active = "+req.body.active+", focus = "+req.body.focus+", description = '"+req.body.description+"', picture = '"+req.body.picture+"' WHERE product_id = "+req.body.id+""
+        console.log(productsQuery)
+        db_connection.query(productsQuery,(err,data)=>{
+        if(err) return res.json(err)
+        return res.json(data)
+        })
+    }else{
+        const productsQuery = "UPDATE products SET product_name = '"+req.body.product_name+"',product_type = '"+req.body.product_type+"',product_category = '"+req.body.product_category+"', product_price = "+req.body.product_price+", active = "+req.body.active+", focus = "+req.body.focus+", description = '"+req.body.description+"' WHERE product_id = "+req.body.id+""
+        console.log(productsQuery) 
+        db_connection.query(productsQuery,(err,data)=>{
+        if(err) return res.json(err)
+        return res.json(data)
+        })
+    }
+    
+    
+})
+
+// Termék törlése:
+
+app.post("/deleteproduct",(req,res)=>{
+    const productsQuery = "DELETE FROM products WHERE product_id = "+req.body.id+""
+    console.log(productsQuery)
+    db_connection.query(productsQuery,(err,data)=>{
+    if(err) return res.json(err)
+    return res.json(data)
+    })        
 })
 

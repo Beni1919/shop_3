@@ -24,21 +24,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
-  import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator,
-    CommandShortcut,
-  } from "@/components/ui/command"
-  import { Textarea } from "@/components/ui/textarea"
-  import { Plus } from 'lucide-react'
-  import { DbUpdatedContext } from "@/App"
+import { Textarea } from "@/components/ui/textarea"
+import { DbUpdatedContext } from "@/App"
+  
 
-export default function AddProductForm(props) {
+export default function UpdateProductForm(props) {
 
     const [categories, setCategories] = useState([])
     const [subCategories, setSubCategories] = useState([])
@@ -71,7 +61,6 @@ export default function AddProductForm(props) {
         getSubCategories()
     },[])
 
-
     async function SubmitForm(event){
         event.preventDefault()
         setLoading(true)
@@ -94,7 +83,8 @@ export default function AddProductForm(props) {
             const formObject = Object.fromEntries(formData)
             console.log(formObject)
 
-             await axios.post("http://localhost:8800/newproduct", {  
+             await axios.post("http://localhost:8800/updateproduct", {  
+                id: formObject.id,
                 product_name: formObject.product_name,
                 product_type: formObject.category,
                 product_category: formObject.subcategory,
@@ -116,20 +106,17 @@ export default function AddProductForm(props) {
 
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogTrigger>
-            <CommandItem className="data-[disabled]:opacity-1"><Plus className="mr-2 h-4 w-4" />
-            <span className="text-base">Új termék hozzáadása</span>
-            </CommandItem>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
+            <AlertDialogTrigger><Button variant='outline'>Szerkeszt</Button></AlertDialogTrigger>
+                <AlertDialogContent>
                     <form onSubmit={SubmitForm} encType="multipart/form-data">
+                    <input name="id" value={props.product_id} hidden></input>
                     <AlertDialogHeader>
-                    <AlertDialogTitle className='mb-2'>Új termék adatai</AlertDialogTitle>
+                    <AlertDialogTitle className='mb-2'>Termék szerkesztése</AlertDialogTitle>
                         <Label htmlFor='product_name'>Termék neve</Label>
-                        <Input name='product_name'  type='text'></Input>
+                        <Input name='product_name'  type='text' defaultValue={props.product_name}></Input>
                         <Label htmlFor='category'>Termék kategória</Label>
-                        <Select name='category'>
-                            <SelectTrigger className="">
+                        <Select name='category' defaultValue={props.product_type}>
+                            <SelectTrigger>
                                 <SelectValue/>
                             </SelectTrigger>
                             <SelectContent>
@@ -139,7 +126,7 @@ export default function AddProductForm(props) {
                             </SelectContent>
                         </Select>
                         <Label htmlFor='subcategory'>Termék alkategória</Label>
-                        <Select name='subcategory'>
+                        <Select name='subcategory' defaultValue={props.product_category}>
                             <SelectTrigger className="">
                                 <SelectValue/>
                             </SelectTrigger>
@@ -150,7 +137,7 @@ export default function AddProductForm(props) {
                             </SelectContent>
                         </Select>
                         <Label htmlFor='active'>Termék megjelenik-e?</Label>
-                        <Select name='active'>
+                        <Select name='active' defaultValue={props.active===1?'Aktív':'Nem aktív'}>
                             <SelectTrigger className="">
                                 <SelectValue/>
                             </SelectTrigger>
@@ -160,7 +147,7 @@ export default function AddProductForm(props) {
                             </SelectContent>
                         </Select>
                         <Label htmlFor='focus'>Termék kiemelt-e?</Label>
-                        <Select name='focus'>
+                        <Select name='focus' defaultValue={props.focus===1?'Kiemelt':'Nem kiemelt'}>
                             <SelectTrigger className="">
                                 <SelectValue/>
                             </SelectTrigger>
@@ -170,9 +157,12 @@ export default function AddProductForm(props) {
                             </SelectContent>
                         </Select>
                         <Label htmlFor='product_price'>Eladási ár</Label>
-                        <Input name='product_price' type='number'></Input>
-                        <Label htmlFor='description'>Termék leírás</Label>
-                        <Textarea name='description'/>
+                        <Input name='product_price' type='number' defaultValue={props.product_price}></Input>
+                        <Label htmlFor='description' >Termék leírás</Label>
+                        <Textarea name='description' defaultValue={props.description}/>
+                        <Label htmlFor='product_picture'>Jelenlegi termék kép</Label>
+                        <img id='product_picture' src={`http://localhost:8800/product_pics/${props.picture}`} alt='product picture' className='w-16 h-16 object-scale-down rounded-full'/>
+                        <Label htmlFor='picture'>Új termék kép feltöltése</Label>
                         <Input name='image' type="file" onChange={(event)=> setNewProductPicture(event.target.files[0])}/>
                     </AlertDialogHeader>
                     <AlertDialogFooter className='mt-2'>
@@ -181,6 +171,6 @@ export default function AddProductForm(props) {
                     </AlertDialogFooter>
                     </form>
                 </AlertDialogContent>
-        </AlertDialog>
+            </AlertDialog>
       )
 }
